@@ -108,3 +108,23 @@ func TestNormalize(t *testing.T) {
 		t.Errorf("normalize float = %#v, want float64(7.5)", got[1])
 	}
 }
+
+func TestResolvedVersionUsesLDFlagsVersion(t *testing.T) {
+	oldVersion := version
+	t.Cleanup(func() { version = oldVersion })
+
+	version = "1.2.3"
+	if got := resolvedVersion(); got != "1.2.3" {
+		t.Errorf("resolvedVersion() = %q, want %q", got, "1.2.3")
+	}
+}
+
+func TestResolvedVersionFallbackIsNotEmpty(t *testing.T) {
+	oldVersion := version
+	t.Cleanup(func() { version = oldVersion })
+
+	version = ""
+	if got := resolvedVersion(); got == "" {
+		t.Error("resolvedVersion() returned empty string")
+	}
+}

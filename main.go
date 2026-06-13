@@ -10,10 +10,13 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"runtime/debug"
 	"strings"
 
 	toml "github.com/pelletier/go-toml/v2"
 )
+
+var version string
 
 func main() {
 	if err := run(); err != nil {
@@ -30,10 +33,26 @@ type options struct {
 
 func run() error {
 	var opts options
+	var versionFlag bool
 	flag.BoolVar(&opts.inlineTable, "inline-table", false, "emit nested tables as inline tables")
 	flag.BoolVar(&opts.omitNull, "omit-null", false, "drop JSON null values instead of erroring")
+	flag.BoolVar(&versionFlag, "version", false, "print version and exit")
 	flag.Parse()
+	if versionFlag {
+		fmt.Fprintf(os.Stdout, "json2toml %s\n", resolvedVersion())
+		return nil
+	}
 	return convert(os.Stdin, os.Stdout, opts)
+}
+
+func resolvedVersion() string {
+	if version != "" {
+		return version
+	}
+	if info, ok := debug.ReadBuildInfo(); ok && info.Main.Version != "" {
+		return info.Main.Version
+	}
+	return "(devel)"
 }
 
 // convert reads JSON from r and writes the equivalent TOML to w.

@@ -11,13 +11,14 @@ go install github.com/johejo/json2toml@latest
 ## Usage
 
 ```sh
-json2toml [-inline-table] [-omit-null] < input.json > output.toml
+json2toml [-inline-table] [-omit-null] [--version] < input.json > output.toml
 ```
 
 | Flag | Description |
 | --- | --- |
 | `-inline-table` | Emit nested tables as inline tables (`{ key = value }`) instead of `[table]` headers. |
 | `-omit-null` | Drop JSON `null` values instead of erroring. |
+| `--version` | Print the version and exit. |
 
 ## Examples
 
